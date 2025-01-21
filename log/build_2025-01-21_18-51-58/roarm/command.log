@@ -1,6 +1,0 @@
-Invoking command in '/home/mihawk/RoArm-M1/build/roarm': CMAKE_PREFIX_PATH=/opt/ros/humble CONDA_PROMPT_MODIFIER=(base) /usr/bin/cmake /home/mihawk/RoArm-M1/src/roarm -DCMAKE_INSTALL_PREFIX=/home/mihawk/RoArm-M1/install/roarm
-Invoked command in '/home/mihawk/RoArm-M1/build/roarm' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble CONDA_PROMPT_MODIFIER=(base) /usr/bin/cmake /home/mihawk/RoArm-M1/src/roarm -DCMAKE_INSTALL_PREFIX=/home/mihawk/RoArm-M1/install/roarm
-Invoking command in '/home/mihawk/RoArm-M1/build/roarm': CMAKE_PREFIX_PATH=/opt/ros/humble CONDA_PROMPT_MODIFIER=(base) /usr/bin/cmake --build /home/mihawk/RoArm-M1/build/roarm -- -j20 -l20
-Invoked command in '/home/mihawk/RoArm-M1/build/roarm' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble CONDA_PROMPT_MODIFIER=(base) /usr/bin/cmake --build /home/mihawk/RoArm-M1/build/roarm -- -j20 -l20
-Invoking command in '/home/mihawk/RoArm-M1/build/roarm': CMAKE_PREFIX_PATH=/opt/ros/humble CONDA_PROMPT_MODIFIER=(base) /usr/bin/cmake --install /home/mihawk/RoArm-M1/build/roarm
-Invoked command in '/home/mihawk/RoArm-M1/build/roarm' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble CONDA_PROMPT_MODIFIER=(base) /usr/bin/cmake --install /home/mihawk/RoArm-M1/build/roarm

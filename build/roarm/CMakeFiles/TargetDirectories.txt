@@ -1,9 +1,0 @@
-/home/mihawk/RoArm-M1/build/roarm/CMakeFiles/uninstall.dir
-/home/mihawk/RoArm-M1/build/roarm/CMakeFiles/roarm_uninstall.dir
-/home/mihawk/RoArm-M1/build/roarm/CMakeFiles/test.dir
-/home/mihawk/RoArm-M1/build/roarm/CMakeFiles/edit_cache.dir
-/home/mihawk/RoArm-M1/build/roarm/CMakeFiles/rebuild_cache.dir
-/home/mihawk/RoArm-M1/build/roarm/CMakeFiles/list_install_components.dir
-/home/mihawk/RoArm-M1/build/roarm/CMakeFiles/install.dir
-/home/mihawk/RoArm-M1/build/roarm/CMakeFiles/install/local.dir
-/home/mihawk/RoArm-M1/build/roarm/CMakeFiles/install/strip.dir
