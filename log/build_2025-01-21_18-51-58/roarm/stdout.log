@@ -1,0 +1,68 @@
+-- The C compiler identification is GNU 11.4.0
+-- The CXX compiler identification is GNU 11.4.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found ament_cmake: 1.3.11 (/opt/ros/humble/share/ament_cmake/cmake)
+-- Found Python3: /home/mihawk/anaconda3/bin/python3 (found version "3.12.7") found components: Interpreter
+-- Found ament_lint_auto: 0.12.11 (/opt/ros/humble/share/ament_lint_auto/cmake)
+-- Added test 'flake8' to check Python code syntax and style conventions
+-- Added test 'lint_cmake' to check CMake code style
+-- Added test 'pep257' to check Python code against some of the docstring style conventions in PEP 257
+-- Added test 'xmllint' to check XML markup files
+-- Configuring done (0.6s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/mihawk/RoArm-M1/build/roarm
+-- Install configuration: ""
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/config
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/config/.gitkeep
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/launch
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/launch/roarm.launch.py
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/maps
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/maps/.gitkeep
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/meshes
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/meshes/L1.stl
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/meshes/L2.stl
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/meshes/L5_2_B.stl
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/meshes/L4.stl
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/meshes/L3.stl
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/meshes/L5_1_A.stl
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/meshes/L5_1_B.stl
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/meshes/L5_2_A.stl
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/meshes/L5_3_B.stl
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/meshes/base.stl
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/meshes/L5_3_A.stl
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/models
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/models/.gitkeep
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/params
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/params/.gitkeep
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/rviz
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/rviz/rviz_basic_settings.rviz
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/src
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/src/.gitkeep
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/urdf
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/urdf/roarm.urdf
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/worlds
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/worlds/.gitkeep
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/ament_index/resource_index/package_run_dependencies/roarm
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/ament_index/resource_index/parent_prefix_path/roarm
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/environment/ament_prefix_path.sh
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/environment/ament_prefix_path.dsv
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/environment/path.sh
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/environment/path.dsv
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/local_setup.bash
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/local_setup.sh
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/local_setup.zsh
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/local_setup.dsv
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/package.dsv
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/ament_index/resource_index/packages/roarm
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/cmake/roarmConfig.cmake
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/cmake/roarmConfig-version.cmake
+-- Installing: /home/mihawk/RoArm-M1/install/roarm/share/roarm/package.xml
