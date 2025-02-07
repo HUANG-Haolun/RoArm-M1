@@ -158,7 +158,7 @@
   
   <joint name="L4_to_L5_1_A" type="revolute">
     <axis xyz="0 0 1"/>
-    <limit effort="1000.0" lower="-1.57" upper="0" velocity="0.5"/>
+    <limit effort="1000.0" lower="-2" upper="0" velocity="0.5"/>
     <parent link="l4_link"/>
     <child link="l5_1_A_link"/>
     <origin xyz="0.003489 0.0601 0.033148" rpy="0.785 0 0"/>
@@ -166,7 +166,7 @@
 
   <joint name="L4_to_L5_1_B" type="revolute">
     <axis xyz="0 0 1"/>
-    <limit effort="1000.0" lower="-1.57" upper="1.57" velocity="0.5"/>
+    <limit effort="1000.0" lower="-2" upper="1.57" velocity="0.5"/>
     <parent link="l4_link"/>
     <child link="l5_1_B_link"/>
     <origin xyz="0.024489 0.0601 0.033148" rpy="0.785 0 0"/>
@@ -175,7 +175,7 @@
 
   <joint name="L4_to_L5_2_A" type="revolute">
     <axis xyz="0 0 1"/>
-    <limit effort="1000.0" lower="-1.57" upper="1.57" velocity="0.5"/>
+    <limit effort="1000.0" lower="-2" upper="1.57" velocity="0.5"/>
     <parent link="l4_link"/>
     <child link="l5_2_A_link"/>
     <origin xyz="-0.017511 0.028905 0.034644" rpy="0.785 0 0"/>
@@ -184,7 +184,7 @@
 
   <joint name="L4_to_L5_2_B" type="revolute">
     <axis xyz="0 0 1"/>
-    <limit effort="1000.0" lower="-1.57" upper="1.57" velocity="0.5"/>
+    <limit effort="1000.0" lower="-2" upper="1.57" velocity="0.5"/>
     <parent link="l4_link"/>
     <child link="l5_2_B_link"/>
     <origin xyz="0.045489 0.028905 0.034644" rpy="0.785 0 0"/>
@@ -193,7 +193,7 @@
 
   <joint name="L5_1_A_to_L5_3_A" type="revolute">
     <axis xyz="0 0 1"/>
-    <limit effort="1000.0" lower="-1.57" upper="0" velocity="0.5"/>
+    <limit effort="1000.0" lower="-2" upper="0" velocity="0.5"/>
     <parent link="l5_1_A_link"/>
     <child link="l5_3_A_link"/>
     <origin xyz="-0.0432 0 -0.008" rpy="0 0 0"/>
@@ -202,7 +202,7 @@
   
   <joint name="L5_1_B_to_L5_3_B" type="revolute">
     <axis xyz="0 0 1"/>
-    <limit effort="1000.0" lower="-1.57" upper="0" velocity="0.5"/>
+    <limit effort="1000.0" lower="-2" upper="0" velocity="0.5"/>
     <parent link="l5_1_B_link"/>
     <child link="l5_3_B_link"/>
     <origin xyz="0.0432 0 -0.008" rpy="0 0 0"/>
