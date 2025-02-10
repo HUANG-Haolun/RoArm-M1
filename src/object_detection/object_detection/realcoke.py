@@ -6,7 +6,7 @@ from ultralytics import YOLO
 from estimater import *
 from datareader import *
 import argparse
-
+import json
 # model = YOLO("./runs/segment/train8/weights/best.pt")
 # results = model("/home/mihawk/yolo/dataset1/images/0001.png", save=False, imgsz=320, conf=0.5)
  
@@ -21,7 +21,7 @@ import pyrealsense2 as rs
 import numpy as np
 # Import OpenCV for easy image rendering
 import cv2
-
+import socket
 
 
 
@@ -50,7 +50,14 @@ if __name__=='__main__':
 
     to_origin, extents = trimesh.bounds.oriented_bounds(mesh)
     bbox = np.stack([-extents/2, extents/2], axis=0).reshape(2,3)
-
+    
+    
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    
+    host = '127.0.0.1'  
+    port = 8888     
+    sock.connect((host, port))
+    
     scorer = ScorePredictor()
     refiner = PoseRefinePredictor()
     glctx = dr.RasterizeCudaContext()
@@ -140,29 +147,32 @@ if __name__=='__main__':
                 find_bool = True
             else:
                 find_bool = False   
-            # output = reader.get_mask(0).astype(bool)
+            output = reader.get_mask(0).astype(bool)
             # if find_bool:
-            # if find_bool and first_bool:
-            #     mask = results[0].masks.xy[0]
-            #     pts = np.array(mask, np.int32)
-            #     pts = pts.reshape((-1, 1, 2))
-            #     output = np.zeros((480, 640), np.uint8)
-            #     cv2.fillPoly(output, [pts], 255)
-            #     pose = est.register(K=reader.K, rgb=color_image, depth=depth_image, ob_mask=output, iteration=args.est_refine_iter)
-            #     first_bool = False
-            # if find_bool and not first_bool:
-            #     pose = est.track_one(rgb=color_image, depth=depth_image, K=reader.K, iteration=args.track_refine_iter)
+            if find_bool and first_bool:
+                mask = results[0].masks.xy[0]
+                pts = np.array(mask, np.int32)
+                pts = pts.reshape((-1, 1, 2))
+                output = np.zeros((480, 640), np.uint8)
+                cv2.fillPoly(output, [pts], 255)
+                pose = est.register(K=reader.K, rgb=color_image, depth=depth_image, ob_mask=output, iteration=args.est_refine_iter)
+                first_bool = False
+            if find_bool and not first_bool:
+                pose = est.track_one(rgb=color_image, depth=depth_image, K=reader.K, iteration=args.track_refine_iter)
 
 
-                # if debug>=1:
-                #     center_pose = pose@np.linalg.inv(to_origin)
-                #     print("-------------------")
-                #     print(center_pose)
-                #     print("-------------------")
-                #     print("pose:\n", pose)
-                #     vis = draw_posed_3d_box(reader.K, img=color_image, ob_in_cam=center_pose, bbox=bbox)
-                #     vis = draw_xyz_axis(color_image, ob_in_cam=center_pose, scale=0.1, K=reader.K, thickness=3, transparency=0)
-                #     cv2.imshow('1', vis)
+                if debug>=1:
+                    center_pose = pose@np.linalg.inv(to_origin)
+                    print("-------------------")
+                    print(center_pose)
+                    print("-------------------")
+                    print("pose:\n", pose)
+                    # json_data = json.dumps([1, 2, 3, 4, 5])
+                    json_data = json.dumps(center_pose.tolist())
+                    sock.sendall(json_data.encode('utf-8'))
+                    vis = draw_posed_3d_box(reader.K, img=color_image, ob_in_cam=center_pose, bbox=bbox)
+                    vis = draw_xyz_axis(color_image, ob_in_cam=center_pose, scale=0.1, K=reader.K, thickness=3, transparency=0)
+                    cv2.imshow('1', vis)
             
             
             # images = np.hstack((color_image, depth_colormap))
@@ -182,4 +192,5 @@ if __name__=='__main__':
                 first_bool = True
     finally:
         pipeline.stop()
+        s.close()
                     

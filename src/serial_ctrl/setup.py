@@ -20,7 +20,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-        	'serial_ctrl = serial_ctrl.serial_ctrl_py:main'
+        	'serial_ctrl = serial_ctrl.serial_ctrl_py:main',
+            'cv_control = serial_ctrl.cv_control_py:main',
         ],
     },
 )
