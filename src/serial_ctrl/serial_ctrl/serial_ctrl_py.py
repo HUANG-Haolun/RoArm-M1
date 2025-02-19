@@ -56,21 +56,10 @@ class MinimalSubscriber(Node):
         print("joint5: ", a[4])
         
         #for the st pose ctrl
-        # {"T":2,"P1":277.5104065,"P2":-13.75,"P3":276.5822754,"P4":90,"P5":235,"S1":10,"S5":200}
-        # {"T":2,"P1":277.5104065,"P2":-13.75,"P3":66.5822754,"P4":180,"P5":235,"S1":10,"S5":200}
-        # {"T":2,"P1":77.5104065,"P2":223.75,"P3":166.5822754,"P4":180,"P5":235,"S1":10,"S5":200}
+        # {"T":2,"P1":207.5104065,"P2":-13.75,"P3":116.5822754,"P4":180,"P5":235,"S1":10,"S5":200}
+        # {"T":1,"P6":40}
+        # {"T":1,"P6":75}
         data = json.dumps({'T':3,'P1':join1,'P2':join2,'P3':join3,'P4':join4,'P5':join5,'S1':0,'S2':0,'S3':0,'S4':0,'S5':0,'A1':60,'A2':60,'A3':60,'A4':60,'A5':60})
-        #     data = json.dumps({'T':2,'P1':a[0],'P2':a[1],'P3':a[2],'P4':a[3],'P5':a[4],'S1':0,'S2':0,'S3':0,'S4':0,'S5':0,'A1':60,'A2':60,'A3':60,'A4':60,'A5':60})
-            # data = json.dumps        
-        #3if for carton ,can and bottle, if they stand or not, swtich to 2 cases for arm to grab.
-        this_type = object_type[0]
-        if this_type == "bottole" or this_type == "can":
-            if stand_state == True:
-                data = json.dumps({'T':2,'P1':277.5104065,'P2':-13.75,'P3':276.5822754,'P4':90,'P5':235,'S1':10,'S5':200})
-            else:
-                data = json.dumps({'T':2,'P1':277.5104065,'P2':-13.75,'P3':66.5822754,'P4':180,'P5':235,'S1':10,'S5':200})
-        elif this_type == "carton":
-            data = json.dumps({'T':2,'P1':77.5104065,'P2':223.75,'P3':166.5822754,'P4':180,'P5':235,'S1':10,'S5':200})
         ser.write(data.encode())
         
         print(data)

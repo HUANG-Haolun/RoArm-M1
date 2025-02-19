@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--This does not replace URDF, and is not an extension of URDF.
+    This is a format for representing semantic information about the robot structure.
+    A URDF file must exist for this robot as well, where the joints and the links that are referenced are defined
+-->
+<robot name="physics">
+    <!--GROUPS: Representation of a set of joints and links. This can be useful for specifying DOF to plan for, defining arms, end effectors, etc-->
+    <!--LINKS: When a link is specified, the parent joint of that link (if it exists) is automatically included-->
+    <!--JOINTS: When a joint is specified, the child link of that joint (which will always exist) is automatically included-->
+    <!--CHAINS: When a chain is specified, all the links along the chain (including endpoints) are included in the group. Additionally, all the joints that are parents to included links are also included. This means that joints along the chain and the parent joint of the base link are included in the group-->
+    <!--SUBGROUPS: Groups can also be formed by referencing to already defined group names-->
+    <group name="roarm_m1">
+        <joint name="virtual_joint"/>
+        <joint name="base_to_L1"/>
+        <joint name="L1_to_L2"/>
+        <joint name="L2_to_L3"/>
+        <joint name="L3_to_L4"/>
+    </group>
+    <group name="caw">
+        <link name="l5_1_A_link"/>
+        <link name="l5_3_A_link"/>
+        <link name="l5_1_B_link"/>
+        <link name="l5_3_B_link"/>
+        <link name="l5_2_A_link"/>
+        <link name="l5_2_B_link"/>
+    </group>
+    <!--GROUP STATES: Purpose: Define a named state for a particular group, in terms of joint values. This is useful to define states like 'folded arms'-->
+    <group_state name="ready" group="roarm_m1">
+        <joint name="L1_to_L2" value="0.7691"/>
+        <joint name="L2_to_L3" value="0"/>
+        <joint name="L3_to_L4" value="0"/>
+        <joint name="base_to_L1" value="0"/>
+    </group_state>
+    <group_state name="start" group="roarm_m1">
+        <joint name="L1_to_L2" value="0.7344"/>
+        <joint name="L2_to_L3" value="-1.5365"/>
+        <joint name="L3_to_L4" value="0"/>
+        <joint name="base_to_L1" value="0"/>
+    </group_state>
+    <group_state name="open" group="caw">
+        <joint name="L4_to_L5_1_A" value="-0.4862"/>
+    </group_state>
+    <group_state name="close" group="caw">
+        <joint name="L4_to_L5_1_A" value="-1.4144"/>
+    </group_state>
+    <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
+    <end_effector name="caw" parent_link="l4_link" group="caw"/>
+    <!--VIRTUAL JOINT: Purpose: this element defines a virtual joint between a robot link and an external frame of reference (considered fixed with respect to the robot)-->
+    <virtual_joint name="virtual_joint" type="fixed" parent_frame="world" child_link="base_link"/>
+</robot>

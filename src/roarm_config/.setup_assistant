@@ -1,0 +1,25 @@
+moveit_setup_assistant_config:
+  urdf:
+    package: roarm
+    relative_path: urdf/roarm.urdf
+  srdf:
+    relative_path: config/physics.srdf
+  package_settings:
+    author_name: Mihawk
+    author_email: hhuangbl@connect.ust.hk
+    generated_timestamp: 1739346165
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+      - velocity
+  modified_urdf:
+    xacros:
+      - control_xacro
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+      - velocity

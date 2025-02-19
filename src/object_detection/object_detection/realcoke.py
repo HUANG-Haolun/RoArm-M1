@@ -30,6 +30,7 @@ if __name__=='__main__':
     parser = argparse.ArgumentParser()
     code_dir = os.path.dirname(os.path.realpath(__file__))
     parser.add_argument('--mesh_file', type=str, default='/home/mihawk/Cutie/dataset/Can_Model_V4.obj')
+    # parser.add_argument('--mesh_file', type=str, default='/home/mihawk/GPHT/cola-can/source/Cola_Cup_Low.obj')
     parser.add_argument('--test_scene_dir', type=str, default='/home/mihawk/Cutie/dataset1')
     parser.add_argument('--est_refine_iter', type=int, default=5)
     parser.add_argument('--track_refine_iter', type=int, default=2)
@@ -110,6 +111,8 @@ if __name__=='__main__':
     intr = profile.get_stream(rs.stream.color).as_video_stream_profile().get_intrinsics()
     # print(intr)
     model = YOLO("/home/mihawk/yolo/runs/segment/train8/weights/best.pt")
+    # model = YOLO("/home/mihawk/GPHT/Aza_train09_12Feb/train3/weights/best.pt")
+    
     # model = YOLO("/home/mihawk/Documents/Aza_train07_22J/train2/weights/epoch120.pt")
     i = 0
     # Streaming loop
@@ -140,7 +143,7 @@ if __name__=='__main__':
             depth_image[(depth_image<0.001) | (depth_image>=np.inf)] = 0
             depth_colormap = cv2.applyColorMap(cv2.convertScaleAbs(depth_image, alpha=0.03), cv2.COLORMAP_JET)
             
-            results = model(color_image, save=False, imgsz=640, conf=0.5)
+            results = model(color_image, save=False, imgsz=640, conf=0.86)
             # logging.info(f'i:{i}')
             
             if len(results[0].boxes) != 0:
@@ -150,10 +153,12 @@ if __name__=='__main__':
             output = reader.get_mask(0).astype(bool)
             # if find_bool:
             if find_bool and first_bool:
+                # mask = results[0].boxes.xyxy[0]
                 mask = results[0].masks.xy[0]
                 pts = np.array(mask, np.int32)
                 pts = pts.reshape((-1, 1, 2))
                 output = np.zeros((480, 640), np.uint8)
+                # cv2.rectangle(output, (int(mask[0]), int(mask[1])), (int(mask[2]), int(mask[3])), 255, -1)
                 cv2.fillPoly(output, [pts], 255)
                 pose = est.register(K=reader.K, rgb=color_image, depth=depth_image, ob_mask=output, iteration=args.est_refine_iter)
                 first_bool = False

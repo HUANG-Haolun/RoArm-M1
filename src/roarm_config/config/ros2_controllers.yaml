@@ -1,0 +1,32 @@
+# This config file is used by ros2_control
+controller_manager:
+  ros__parameters:
+    update_rate: 100  # Hz
+
+    roarm_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+
+    caw_controller:
+      type: position_controllers/GripperActionController
+
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+roarm_controller:
+  ros__parameters:
+    joints:
+      - base_to_L1
+      - L1_to_L2
+      - L2_to_L3
+      - L3_to_L4
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+    allow_nonzero_velocity_at_trajectory_end: true
+caw_controller:
+  ros__parameters:
+    joint: L4_to_L5_1_A

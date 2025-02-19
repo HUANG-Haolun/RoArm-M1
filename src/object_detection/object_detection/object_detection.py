@@ -44,11 +44,12 @@ class MinimalPublisher(Node):
 
             array_data = json.loads(data.decode('utf-8'))
             array_data = np.array(array_data)
-            print("Received array:")
+            print("Received array")
 
             msg.pose.position.x = array_data[0][3]
             msg.pose.position.y = array_data[1][3]
             msg.pose.position.z = array_data[2][3]
+            # msg.pose.position.z = 0.0
             rotation = array_data[:3,:3]
             r = R.from_matrix(rotation)
             quaternion = r.as_quat() 

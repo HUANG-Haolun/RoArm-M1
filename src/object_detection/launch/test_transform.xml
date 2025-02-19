@@ -1,0 +1,15 @@
+<launch>
+
+<!-- <node pkg="object_detection" exec="object_detection" name="transform_node"/>     -->
+
+<!-- <node pkg="tf2_ros" exec="static_transform_publisher" name="realsense_to_world" args="0 0 0 -0.4759 0 0   temp1 camera"  /> -->
+<node pkg="tf2_ros" exec="static_transform_publisher" name="realsense_to_world" args="0 0 0 0 0 -0.45721 camera temp" />
+<!-- <node pkg="tf2_ros" exec="static_transform_publisher" name="realsense_to_world" args="0 0 0 0 0 -0.45721 camera temp" /> -->
+<!-- <node pkg="tf2_ros" exec="static_transform_publisher" name="realsense_to_world" args="0 0 0 -1.5708 0 0  temp world" />
+<node pkg="tf2_ros" exec="static_transform_publisher" name="realsense_to_world" args="0.7 -0.40 -0.20 0 0 0  world arm_base" />
+<node pkg="tf2_ros" exec="static_transform_publisher" name="realsense_to_world" args="0 -0 -0 1.5708 0 0   arm_base arm_base1" />
+
+<node pkg="rviz2" exec="rviz2" name="rviz" /> -->
+
+
+</launch>
