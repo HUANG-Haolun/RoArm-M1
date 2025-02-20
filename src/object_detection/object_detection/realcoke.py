@@ -149,7 +149,9 @@ if __name__=='__main__':
             if len(results[0].boxes) != 0:
                 find_bool = True
             else:
-                find_bool = False   
+                find_bool = False  
+                first_bool = True
+                 
             output = reader.get_mask(0).astype(bool)
             # if find_bool:
             if find_bool and first_bool:
