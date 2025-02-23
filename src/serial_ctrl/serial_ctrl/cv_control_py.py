@@ -20,7 +20,7 @@ from scipy.spatial.transform import Rotation as R
 import numpy as np
 import math
 from tf2_ros import TransformException
-ser = serial.Serial("/dev/ttyUSB0",115200)
+ser = serial.Serial("/dev/ttyUSB1",115200)
 object_type = {"bottle","can","carton"}
 stand_state = None
 target_x = 180.5104065
@@ -116,17 +116,23 @@ class MinimalSubscriber(Node):
         if target_x < 180:
             target_x = 180
             
-        target_angle = 235 + angle
-        if target_angle < 145:
-            target_angle = 145
-        if target_angle > 325:
-            target_angle = 325
-            
-        target_y = -13.75 - target_pose.pose.position.y * 1000 * 0.6
+  
+        target_y = -13.75 - target_pose.pose.position.y * 1000 * 0.55
         if target_y > 180:
             target_y = 180
         if target_y < -180:
             target_y = -180
+           
+        phase_angle = math.atan2(target_y+13, target_x)/math.pi*180
+        print(f"Phase angle: {phase_angle}")
+        target_angle = 235 + angle + phase_angle
+        if target_angle < 145:
+            target_angle = 145
+        if target_angle > 325:
+            target_angle = 325
+          
+
+
         data = json.dumps({'T':2,'P1':target_x,'P2':target_y,'P3':186.5822754,'P4':170,'P5':target_angle,"S1":10,"S5":1000})
         print(data)
         if not grab_state:

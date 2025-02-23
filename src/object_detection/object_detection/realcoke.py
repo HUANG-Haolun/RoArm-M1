@@ -111,7 +111,7 @@ if __name__=='__main__':
     intr = profile.get_stream(rs.stream.color).as_video_stream_profile().get_intrinsics()
     # print(intr)
     model = YOLO("/home/mihawk/yolo/runs/segment/train8/weights/best.pt")
-    # model = YOLO("/home/mihawk/GPHT/Aza_train09_12Feb/train3/weights/best.pt")
+    # model = YOLO("/home/mihawk/GPHT/Aza_train13_19Feb(11m)/weights/best.pt")
     
     # model = YOLO("/home/mihawk/Documents/Aza_train07_22J/train2/weights/epoch120.pt")
     i = 0
