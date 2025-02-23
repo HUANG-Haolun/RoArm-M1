@@ -20,7 +20,7 @@ from scipy.spatial.transform import Rotation as R
 import numpy as np
 import math
 from tf2_ros import TransformException
-ser = serial.Serial("/dev/ttyUSB1",115200)
+ser = serial.Serial("/dev/ttyUSB0",115200)
 object_type = {"bottle","can","carton"}
 stand_state = None
 target_x = 180.5104065
@@ -91,7 +91,7 @@ class MinimalSubscriber(Node):
         
         
         
-        self.get_logger().info(f"Received object pose: {target_pose.pose.position.x}, {target_pose.pose.position.y}, {target_pose.pose.position.z}")
+        # self.get_logger().info(f"Received object pose: {target_pose.pose.position.x}, {target_pose.pose.position.y}, {target_pose.pose.position.z}")
 
         rotation = R.from_quat([target_pose.pose.orientation.x, target_pose.pose.orientation.y, target_pose.pose.orientation.z, target_pose.pose.orientation.w])        
                 
@@ -101,7 +101,8 @@ class MinimalSubscriber(Node):
         rotated_z_axis = rotation.apply(z_axis)
 
         
-        # print(f"fa fa: {rotated_z_axis}")
+        print(f"ijk: {rotated_z_axis}")
+        self.get_logger().warn(f"xyz: {target_pose.pose.position.x-0.04}, {target_pose.pose.position.y+0.04}, {target_pose.pose.position.z-0.08}")
         if rotated_z_axis[2] > 0.8 or rotated_z_axis[2] < -0.8:
             self.get_logger().warn("Object is vertical")
             return
@@ -124,7 +125,7 @@ class MinimalSubscriber(Node):
             target_y = -180
            
         phase_angle = math.atan2(target_y+13, target_x)/math.pi*180
-        print(f"Phase angle: {phase_angle}")
+        # print(f"Phase angle: {phase_angle}")
         target_angle = 235 + angle + phase_angle
         if target_angle < 145:
             target_angle = 145
@@ -134,7 +135,7 @@ class MinimalSubscriber(Node):
 
 
         data = json.dumps({'T':2,'P1':target_x,'P2':target_y,'P3':186.5822754,'P4':170,'P5':target_angle,"S1":10,"S5":1000})
-        print(data)
+        # print(data)
         if not grab_state:
             ser.write(data.encode())
 

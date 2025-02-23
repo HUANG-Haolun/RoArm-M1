@@ -114,7 +114,7 @@ if __name__=='__main__':
     intr = profile.get_stream(rs.stream.color).as_video_stream_profile().get_intrinsics()
     # print(intr)
     # model = YOLO("/home/mihawk/yolo/runs/segment/train8/weights/best.pt")
-    model = YOLO("/home/mihawk/GPHT/Aza_train13_19Feb(11m)/weights/best.pt")
+    model = YOLO("/home/mihawk/GPHT/Cody_20250211_T1/weights/Cody_20250211_T1_best.pt")
     
     # model = YOLO("/home/mihawk/Documents/Aza_train07_22J/train2/weights/epoch120.pt")
     i = 0
@@ -186,7 +186,7 @@ if __name__=='__main__':
                     # json_data = json.dumps([1, 2, 3, 4, 5])
                     json_data = json.dumps(center_pose.tolist())
                     sock.sendall(json_data.encode('utf-8'))
-                    # vis = draw_posed_3d_box(reader.K, img=color_image, ob_in_cam=center_pose, bbox=bbox)
+                    vis = draw_posed_3d_box(reader.K, img=color_image, ob_in_cam=center_pose, bbox=bbox)
                     vis = draw_xyz_axis(color_image, ob_in_cam=center_pose, scale=0.1, K=reader.K, thickness=3, transparency=0)
                     cv2.imshow('1', vis)
             
