@@ -29,9 +29,9 @@ import socket
 if __name__=='__main__':
     parser = argparse.ArgumentParser()
     code_dir = os.path.dirname(os.path.realpath(__file__))
-    parser.add_argument('--mesh_file', type=str, default='/home/mihawk/Cutie/dataset/Carton_Model_V3.obj')
+    # parser.add_argument('--mesh_file', type=str, default='/home/mihawk/Cutie/dataset/Carton_Model_V3.obj')
     # parser.add_argument('--mesh_file', type=str, default='/home/mihawk/Cutie/dataset/Bottle_V1_cola2.obj')
-    # parser.add_argument('--mesh_file', type=str, default='/home/mihawk/Cutie/dataset/Can_Model_V4.obj')
+    parser.add_argument('--mesh_file', type=str, default='/home/mihawk/Cutie/dataset/Can_Model_V4.obj')
     
     parser.add_argument('--test_scene_dir', type=str, default='/home/mihawk/Cutie/dataset1')
     parser.add_argument('--est_refine_iter', type=int, default=5)
