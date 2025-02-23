@@ -110,14 +110,14 @@ class MinimalSubscriber(Node):
         #     angle = 180 + angle
         # self.get_logger().info(f"Angle: {angle}")
         
-        target_x = 180.5104065 +( -0.1 + target_pose.pose.position.x) * 1000
+        target_x = 180.5104065 +( -0.06 + target_pose.pose.position.x) * 1000
         if target_x > 300:
             target_x = 300
         if target_x < 180:
             target_x = 180
             
   
-        target_y = -13.75 - target_pose.pose.position.y * 1000 * 0.55
+        target_y = -13.75 - target_pose.pose.position.y * 1000 * 0.5
         if target_y > 180:
             target_y = 180
         if target_y < -180:

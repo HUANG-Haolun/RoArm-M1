@@ -29,8 +29,10 @@ import socket
 if __name__=='__main__':
     parser = argparse.ArgumentParser()
     code_dir = os.path.dirname(os.path.realpath(__file__))
-    parser.add_argument('--mesh_file', type=str, default='/home/mihawk/Cutie/dataset/Can_Model_V4.obj')
-    # parser.add_argument('--mesh_file', type=str, default='/home/mihawk/GPHT/cola-can/source/Cola_Cup_Low.obj')
+    parser.add_argument('--mesh_file', type=str, default='/home/mihawk/Cutie/dataset/Carton_Model_V3.obj')
+    # parser.add_argument('--mesh_file', type=str, default='/home/mihawk/Cutie/dataset/Bottle_V1_cola2.obj')
+    # parser.add_argument('--mesh_file', type=str, default='/home/mihawk/Cutie/dataset/Can_Model_V4.obj')
+    
     parser.add_argument('--test_scene_dir', type=str, default='/home/mihawk/Cutie/dataset1')
     parser.add_argument('--est_refine_iter', type=int, default=5)
     parser.add_argument('--track_refine_iter', type=int, default=2)
@@ -43,6 +45,7 @@ if __name__=='__main__':
 
     mesh = trimesh.load(args.mesh_file,force='mesh')
     mesh.vertices *= 2
+    # mesh.vertices /=1000
     find_bool = False
     first_bool = True
     debug = args.debug
@@ -110,8 +113,8 @@ if __name__=='__main__':
     #print camera intrinsics
     intr = profile.get_stream(rs.stream.color).as_video_stream_profile().get_intrinsics()
     # print(intr)
-    model = YOLO("/home/mihawk/yolo/runs/segment/train8/weights/best.pt")
-    # model = YOLO("/home/mihawk/GPHT/Aza_train13_19Feb(11m)/weights/best.pt")
+    # model = YOLO("/home/mihawk/yolo/runs/segment/train8/weights/best.pt")
+    model = YOLO("/home/mihawk/GPHT/Aza_train13_19Feb(11m)/weights/best.pt")
     
     # model = YOLO("/home/mihawk/Documents/Aza_train07_22J/train2/weights/epoch120.pt")
     i = 0
@@ -155,13 +158,19 @@ if __name__=='__main__':
             output = reader.get_mask(0).astype(bool)
             # if find_bool:
             if find_bool and first_bool:
-                # mask = results[0].boxes.xyxy[0]
-                mask = results[0].masks.xy[0]
-                pts = np.array(mask, np.int32)
-                pts = pts.reshape((-1, 1, 2))
+                # for boundingbox
+                mask = results[0].boxes.xyxy[0]
                 output = np.zeros((480, 640), np.uint8)
-                # cv2.rectangle(output, (int(mask[0]), int(mask[1])), (int(mask[2]), int(mask[3])), 255, -1)
-                cv2.fillPoly(output, [pts], 255)
+                cv2.rectangle(output, (int(mask[0]), int(mask[1])), (int(mask[2]), int(mask[3])), 255, -1)
+                
+                # for mask
+                # mask = results[0].masks.xy[0]
+                # pts = np.array(mask, np.int32)
+                # pts = pts.reshape((-1, 1, 2))
+                # output = np.zeros((480, 640), np.uint8)
+                # cv2.fillPoly(output, [pts], 255)
+                
+                
                 pose = est.register(K=reader.K, rgb=color_image, depth=depth_image, ob_mask=output, iteration=args.est_refine_iter)
                 first_bool = False
             if find_bool and not first_bool:
@@ -177,7 +186,7 @@ if __name__=='__main__':
                     # json_data = json.dumps([1, 2, 3, 4, 5])
                     json_data = json.dumps(center_pose.tolist())
                     sock.sendall(json_data.encode('utf-8'))
-                    vis = draw_posed_3d_box(reader.K, img=color_image, ob_in_cam=center_pose, bbox=bbox)
+                    # vis = draw_posed_3d_box(reader.K, img=color_image, ob_in_cam=center_pose, bbox=bbox)
                     vis = draw_xyz_axis(color_image, ob_in_cam=center_pose, scale=0.1, K=reader.K, thickness=3, transparency=0)
                     cv2.imshow('1', vis)
             
