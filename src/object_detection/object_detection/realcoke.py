@@ -24,14 +24,17 @@ import cv2
 import socket
 
 
-
+video_name = 'output_video.mp4'
+fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+video = cv2.VideoWriter(video_name, fourcc, 30, (640, 480))
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser()
     code_dir = os.path.dirname(os.path.realpath(__file__))
     # parser.add_argument('--mesh_file', type=str, default='/home/mihawk/Cutie/dataset/Carton_Model_V3.obj')
     # parser.add_argument('--mesh_file', type=str, default='/home/mihawk/Cutie/dataset/Bottle_V1_cola2.obj')
-    parser.add_argument('--mesh_file', type=str, default='/home/mihawk/Cutie/dataset/Can_Model_V4.obj')
+    # parser.add_argument('--mesh_file', type=str, default='/home/mihawk/Cutie/dataset/Can_Model_V4.obj')
+    parser.add_argument('--mesh_file', type=str, default='/home/mihawk/Cutie/dataset/Can_Model_V2.obj')
     
     parser.add_argument('--test_scene_dir', type=str, default='/home/mihawk/Cutie/dataset1')
     parser.add_argument('--est_refine_iter', type=int, default=5)
@@ -48,6 +51,7 @@ if __name__=='__main__':
     # mesh.vertices /=1000
     find_bool = False
     first_bool = True
+    number_bool = False
     debug = args.debug
     debug_dir = args.debug_dir
     os.system(f'rm -rf {debug_dir}/* && mkdir -p {debug_dir}/track_vis {debug_dir}/ob_in_cam')
@@ -120,7 +124,7 @@ if __name__=='__main__':
     i = 0
     # Streaming loop
     output = np.zeros((480, 640), np.uint8)
-    
+    result_number = 0
     try:
         while True:
             # Get frameset of color and depth
@@ -151,13 +155,19 @@ if __name__=='__main__':
             
             if len(results[0].boxes) != 0:
                 find_bool = True
+                if result_number != results[0].boxes.shape[0]:
+                    number_bool = False
+                else:
+                    number_bool = True
+                result_number = results[0].boxes.shape[0]
+                print(f"result_number: {result_number}")
             else:
                 find_bool = False  
                 first_bool = True
                  
             output = reader.get_mask(0).astype(bool)
             # if find_bool:
-            if find_bool and first_bool:
+            if (find_bool and (first_bool or not number_bool)):
                 # for boundingbox
                 mask = results[0].boxes.xyxy[0]
                 output = np.zeros((480, 640), np.uint8)
@@ -173,6 +183,7 @@ if __name__=='__main__':
                 
                 pose = est.register(K=reader.K, rgb=color_image, depth=depth_image, ob_mask=output, iteration=args.est_refine_iter)
                 first_bool = False
+
             if find_bool and not first_bool:
                 pose = est.track_one(rgb=color_image, depth=depth_image, K=reader.K, iteration=args.track_refine_iter)
 
@@ -198,6 +209,7 @@ if __name__=='__main__':
                 im = result.plot(conf = False)
                 # concat = np.hstack((im, output))
                 cv2.imshow('image', im)
+                # video.write(color_image)
 
             i += 1
             key = cv2.waitKey(1)
@@ -209,4 +221,7 @@ if __name__=='__main__':
     finally:
         pipeline.stop()
         s.close()
+        video.release()
+        cv2.destroyAllWindows()
+        print("finish")
                     
