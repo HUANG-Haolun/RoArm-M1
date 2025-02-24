@@ -24,17 +24,17 @@ import cv2
 import socket
 
 
-video_name = 'output_video.mp4'
-fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-video = cv2.VideoWriter(video_name, fourcc, 30, (640, 480))
+# video_name = 'output_video1.mp4'
+# fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+# video = cv2.VideoWriter(video_name, fourcc, 30, (640, 480))
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser()
     code_dir = os.path.dirname(os.path.realpath(__file__))
-    # parser.add_argument('--mesh_file', type=str, default='/home/mihawk/Cutie/dataset/Carton_Model_V3.obj')
-    # parser.add_argument('--mesh_file', type=str, default='/home/mihawk/Cutie/dataset/Bottle_V1_cola2.obj')
-    # parser.add_argument('--mesh_file', type=str, default='/home/mihawk/Cutie/dataset/Can_Model_V4.obj')
-    parser.add_argument('--mesh_file', type=str, default='/home/mihawk/Cutie/dataset/Can_Model_V2.obj')
+    parser.add_argument('--mesh_file3', type=str, default='/home/mihawk/Cutie/dataset/Carton_Model_V3.obj')
+    parser.add_argument('--mesh_file2', type=str, default='/home/mihawk/Cutie/dataset/Bottle_V1_cola2.obj')
+    parser.add_argument('--mesh_file1', type=str, default='/home/mihawk/Cutie/dataset/Can_Model_V2.obj')
+    parser.add_argument('--mesh_file4', type=str, default='/home/mihawk/Cutie/dataset/Can_Model_V2.obj')
     
     parser.add_argument('--test_scene_dir', type=str, default='/home/mihawk/Cutie/dataset1')
     parser.add_argument('--est_refine_iter', type=int, default=5)
@@ -46,30 +46,53 @@ if __name__=='__main__':
     set_logging_format()
     set_seed(0)
 
-    mesh = trimesh.load(args.mesh_file,force='mesh')
-    mesh.vertices *= 2
-    # mesh.vertices /=1000
-    find_bool = False
-    first_bool = True
-    number_bool = False
-    debug = args.debug
-    debug_dir = args.debug_dir
-    os.system(f'rm -rf {debug_dir}/* && mkdir -p {debug_dir}/track_vis {debug_dir}/ob_in_cam')
 
-    to_origin, extents = trimesh.bounds.oriented_bounds(mesh)
-    bbox = np.stack([-extents/2, extents/2], axis=0).reshape(2,3)
+
+    mesh1 = trimesh.load(args.mesh_file1,force='mesh')
+    mesh1.vertices *= 2
+    # mesh.vertices /=1000
+
+    to_origin1, extents1 = trimesh.bounds.oriented_bounds(mesh1)
+    bbox1 = np.stack([-extents1/2, extents1/2], axis=0).reshape(2,3)
     
+    
+    mesh2 = trimesh.load(args.mesh_file2,force='mesh')
+    mesh2.vertices *= 2
+    # mesh.vertices /=1000
+
+    to_origin2, extents2 = trimesh.bounds.oriented_bounds(mesh2)
+    bbox2 = np.stack([-extents2/2, extents2/2], axis=0).reshape(2,3)
+    
+    mesh3 = trimesh.load(args.mesh_file3,force='mesh')
+    mesh3.vertices *= 2
+    # mesh.vertices /=1000
+
+    to_origin3, extents3 = trimesh.bounds.oriented_bounds(mesh1)
+    bbox3 = np.stack([-extents3/2, extents3/2], axis=0).reshape(2,3)
     
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     
     host = '127.0.0.1'  
     port = 8888     
     sock.connect((host, port))
+  
+    find_bool = False
+    first_bool = True
+    number_bool = False
+    debug = args.debug
+    debug_dir = args.debug_dir
+    os.system(f'rm -rf {debug_dir}/* && mkdir -p {debug_dir}/track_vis {debug_dir}/ob_in_cam')
+  
     
     scorer = ScorePredictor()
     refiner = PoseRefinePredictor()
     glctx = dr.RasterizeCudaContext()
-    est = FoundationPose(model_pts=mesh.vertices, model_normals=mesh.vertex_normals, mesh=mesh, scorer=scorer, refiner=refiner, debug_dir=debug_dir, debug=debug, glctx=glctx)
+    
+    
+    est1 = FoundationPose(model_pts=mesh1.vertices, model_normals=mesh1.vertex_normals, mesh=mesh1, scorer=scorer, refiner=refiner, debug_dir=debug_dir, debug=debug, glctx=glctx)
+    est2 = FoundationPose(model_pts=mesh2.vertices, model_normals=mesh2.vertex_normals, mesh=mesh2, scorer=scorer, refiner=refiner, debug_dir=debug_dir, debug=debug, glctx=glctx)
+    est3 = FoundationPose(model_pts=mesh3.vertices, model_normals=mesh3.vertex_normals, mesh=mesh3, scorer=scorer, refiner=refiner, debug_dir=debug_dir, debug=debug, glctx=glctx)
+    
     logging.info("estimator initialization done")
 
     reader = YcbineoatReader(video_dir=args.test_scene_dir, shorter_side=None, zfar=np.inf)
@@ -152,9 +175,11 @@ if __name__=='__main__':
             
             results = model(color_image, save=False, imgsz=640, conf=0.86)
             # logging.info(f'i:{i}')
-            
+            result_name = -1
             if len(results[0].boxes) != 0:
                 find_bool = True
+                result_name = int(results[0].boxes[0].cls.cpu().numpy()[0])
+                print(f"results name: {result_name}")
                 if result_number != results[0].boxes.shape[0]:
                     number_bool = False
                 else:
@@ -167,6 +192,7 @@ if __name__=='__main__':
                  
             output = reader.get_mask(0).astype(bool)
             # if find_bool:
+            
             if (find_bool and (first_bool or not number_bool)):
                 # for boundingbox
                 mask = results[0].boxes.xyxy[0]
@@ -179,6 +205,20 @@ if __name__=='__main__':
                 # pts = pts.reshape((-1, 1, 2))
                 # output = np.zeros((480, 640), np.uint8)
                 # cv2.fillPoly(output, [pts], 255)
+                est = None
+                
+                if result_name == 0:
+                    est = est1
+                    bbox = bbox1
+                    to_origin = to_origin1
+                elif result_name == 1:
+                    est = est2
+                    bbox = bbox2
+                    to_origin = to_origin2
+                elif result_name == 2:
+                    est = est3
+                    bbox = bbox3
+                    to_origin = to_origin3
                 
                 
                 pose = est.register(K=reader.K, rgb=color_image, depth=depth_image, ob_mask=output, iteration=args.est_refine_iter)
@@ -190,11 +230,8 @@ if __name__=='__main__':
 
                 if debug>=1:
                     center_pose = pose@np.linalg.inv(to_origin)
-                    print("-------------------")
-                    print(center_pose)
-                    print("-------------------")
-                    print("pose:\n", pose)
-                    # json_data = json.dumps([1, 2, 3, 4, 5])
+
+                    center_pose[3][3] = result_name
                     json_data = json.dumps(center_pose.tolist())
                     sock.sendall(json_data.encode('utf-8'))
                     vis = draw_posed_3d_box(reader.K, img=color_image, ob_in_cam=center_pose, bbox=bbox)
@@ -202,7 +239,6 @@ if __name__=='__main__':
                     cv2.imshow('1', vis)
             
             
-            # images = np.hstack((color_image, depth_colormap))
             
             
             for result in results: 
@@ -221,7 +257,7 @@ if __name__=='__main__':
     finally:
         pipeline.stop()
         s.close()
-        video.release()
+        # video.release()
         cv2.destroyAllWindows()
         print("finish")
                     

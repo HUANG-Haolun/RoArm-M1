@@ -27,8 +27,9 @@ class MinimalPublisher(Node):
 
     def timer_callback(self):
         msg = PoseStamped()
+        # msg.header.stamp = self.get_clock().now().to_msg()
         msg.header.frame_id = 'camera'
-        msg.header.stamp = self.get_clock().now().to_msg()
+        
         # msg.header.seq = self.i
         # msg.data = 'Hello World: %d' % self.i
         # self.get_logger().info('Publishing: "%s"' % msg.data)
@@ -41,10 +42,9 @@ class MinimalPublisher(Node):
             
             if not data:
                 print("No data received")
-
             array_data = json.loads(data.decode('utf-8'))
             array_data = np.array(array_data)
-
+            msg.header.stamp.sec = int(array_data[3][3])
             msg.pose.position.x = array_data[0][3]
             msg.pose.position.y = array_data[1][3]
             msg.pose.position.z = array_data[2][3]
