@@ -28,6 +28,7 @@ target_y = -13.75
 target_z = 186.5822754
 target_angle = 235
 grab_state = False
+object_type = -1
 class MinimalSubscriber(Node):
 
     def __init__(self):
@@ -63,34 +64,40 @@ class MinimalSubscriber(Node):
         global grab_state
         if msg.data == 1:
             grab_state = True
-            time.sleep(2)
+            # time.sleep(2)
 
-            data = json.dumps({'T':2,'P1':target_x,'P2':target_y,'P3':106.5822754,'P4':180,'P5':target_angle,"S1":10,"S5":1000})
-            ser.write(data.encode())
-            time.sleep(1.5)
+            # data = json.dumps({'T':2,'P1':target_x,'P2':target_y,'P3':106.5822754,'P4':180,'P5':target_angle,"S1":10,"S5":1000})
+            # ser.write(data.encode())
+            # time.sleep(1.5)
             
-            # data = json.dumps({"T":1,"P6":75, "S6": 1000})
-            data = json.dumps({"T":1,"P6":70, "S6": 1000})
-            ser.write(data.encode())
-            time.sleep(1.5)
+            # # data = json.dumps({"T":1,"P6":75, "S6": 1000})
+            # if object_type == 0:
+            #     data = json.dumps({"T":1,"P6":70, "S6": 1000})
+            # elif object_type == 1:
+            #     data = json.dumps({"T":1,"P6":80, "S6": 1000})
+            # elif object_type == 2:
+            #     data = json.dumps({"T":1,"P6":100, "S6": 1000})
             
-            data = json.dumps({'T':2,'P1':target_x,'P2':target_y,'P3':186.5822754,'P4':180,'P5':target_angle,"S1":10,"S5":1000})
-            ser.write(data.encode())
-            time.sleep(1.5)
+            # ser.write(data.encode())
+            # time.sleep(1.5)
             
-            data = json.dumps({'T':2,'P1':60.5104065,'P2':-373.75,'P3':186.5822754,'P4':180,'P5':235,"S1":10,"S5":1000})
-            ser.write(data.encode())
-            time.sleep(7)
+            # data = json.dumps({'T':2,'P1':target_x,'P2':target_y,'P3':186.5822754,'P4':180,'P5':target_angle,"S1":10,"S5":1000})
+            # ser.write(data.encode())
+            # time.sleep(1.5)
             
-            data = json.dumps({"T":1,"P6":40, "S6": 1000})
-            ser.write(data.encode())
-            time.sleep(1.5)
+            # data = json.dumps({'T':2,'P1':60.5104065,'P2':-373.75,'P3':186.5822754,'P4':180,'P5':235,"S1":10,"S5":1000})
+            # ser.write(data.encode())
+            # time.sleep(7)
             
-            data = json.dumps({'T':2,'P1':180.5104065,'P2':-13.75,'P3':186.5822754,'P4':180,'P5':235,"S1":10,"S5":1000})
-            ser.write(data.encode())
-            time.sleep(5)
+            # data = json.dumps({"T":1,"P6":40, "S6": 1000})
+            # ser.write(data.encode())
+            # time.sleep(1.5)
             
-            grab_state = False
+            # data = json.dumps({'T':2,'P1':180.5104065,'P2':-13.75,'P3':186.5822754,'P4':180,'P5':235,"S1":10,"S5":1000})
+            # ser.write(data.encode())
+            # time.sleep(5)
+            
+            # grab_state = False
             
         # elif msg.data == 0:
         #     data = json.dumps({"T":1,"P6":40, "S6": 1000})
@@ -105,7 +112,8 @@ class MinimalSubscriber(Node):
     #     getAngle = int()
 
     def listener_callback(self, msg):
-        global target_x, target_y, target_z, target_angle, grab_state
+        global target_x, target_y, target_z, target_angle, grab_state, object_type
+        # target_frame = 'world'
         target_frame = 'arm_base'
         self.tf_buffer.can_transform(target_frame, msg.header.frame_id, rclpy.time.Time())
         target_pose = self.tf_buffer.transform(msg, target_frame)
@@ -123,7 +131,7 @@ class MinimalSubscriber(Node):
 
         
         print(f"ijk: {rotated_z_axis}")
-        self.get_logger().warn(f"xyz: {target_pose.pose.position.x-0.04}, {target_pose.pose.position.y-0.04}, {target_pose.pose.position.z-0.08}")
+        self.get_logger().warn(f"xyz: {target_pose.pose.position.x}, {target_pose.pose.position.y+0.04}, {target_pose.pose.position.z}")
         if rotated_z_axis[2] > 0.8 or rotated_z_axis[2] < -0.8:
             self.get_logger().warn("Object is vertical")
             return
@@ -132,33 +140,84 @@ class MinimalSubscriber(Node):
         #     angle = 180 + angle
         # self.get_logger().info(f"Angle: {angle}")
         
-        target_x = 180.5104065 +( -0.1 + target_pose.pose.position.x) * 1000
-        if target_x > 300:
-            target_x = 300
-        if target_x < 180:
-            target_x = 180
-            
+        target_x = 180.5104065 +( -0.125 + target_pose.pose.position.x) * 1000
+
   
-        target_y = -13.75 - (target_pose.pose.position.y-0.04) * 1000 * 0.5
+        target_y = -25.75 - (target_pose.pose.position.y) * 1000 * 0.55
+
+           
+        phase_angle = math.atan2(target_y+13, target_x)/math.pi*180
+        print(f"Phase angle: {phase_angle}")
+        print(f"Angle: {angle}")
+        target_angle = 235 + angle + phase_angle
+        if target_angle < 105:
+            target_angle = 145
+        if target_angle > 375:
+            target_angle = 375
+          
+
+        object_type = msg.header.stamp.sec
+
+        
         if target_y > 180:
             target_y = 180
         if target_y < -180:
             target_y = -180
-           
-        phase_angle = math.atan2(target_y+13, target_x)/math.pi*180
-        # print(f"Phase angle: {phase_angle}")
-        target_angle = 235 + angle + phase_angle
-        if target_angle < 145:
-            target_angle = 145
-        if target_angle > 325:
-            target_angle = 325
-          
-
+        if target_x > 300:
+            target_x = 300
+        if target_x < 180:
+            target_x = 180
         self.get_logger().info(f"target_x: {target_x}, target_y: {target_y}, target_angle: {target_angle}")
-        # print(data)
-        if not grab_state:
-            data = json.dumps({'T':2,'P1':target_x,'P2':target_y,'P3':186.5822754,'P4':180,'P5':target_angle,"S1":10,"S5":1000})
-            ser.write(data.encode())
+        # time.sleep(1)
+        data = json.dumps({'T':2,'P1':target_x,'P2':target_y,'P3':186.5822754,'P4':180,'P5':target_angle,"S1":10,"S5":1000})
+        ser.write(data.encode())
+        self.get_logger().info("1")
+    
+        time.sleep(3)
+
+        if object_type == 2:
+            data = json.dumps({'T':2,'P1':target_x,'P2':target_y,'P3':76.5822754,'P4':180,'P5':target_angle,"S1":10,"S5":1000})
+        else:
+            data = json.dumps({'T':2,'P1':target_x,'P2':target_y,'P3':106.5822754,'P4':180,'P5':target_angle,"S1":10,"S5":1000})
+            
+            
+        ser.write(data.encode())
+        self.get_logger().info("2")
+        time.sleep(3)
+        
+        # data = json.dumps({"T":1,"P6":75, "S6": 1000})
+        if object_type == 0:
+            data = json.dumps({"T":1,"P6":70, "S6": 1000})
+        elif object_type == 1:
+            data = json.dumps({"T":1,"P6":80, "S6": 1000})
+        elif object_type == 2:
+            print("carton")
+            data = json.dumps({"T":1,"P6":65, "S6": 1000})
+        
+        ser.write(data.encode())
+        self.get_logger().info("3")
+        time.sleep(3)
+        
+        data = json.dumps({'T':2,'P1':target_x,'P2':target_y,'P3':186.5822754,'P4':180,'P5':target_angle,"S1":10,"S5":1000})
+        ser.write(data.encode())
+        self.get_logger().info("4")
+        time.sleep(3)
+        
+        data = json.dumps({'T':2,'P1':60.5104065,'P2':-373.75,'P3':186.5822754,'P4':180,'P5':235,"S1":10,"S5":1000})
+        ser.write(data.encode())
+        self.get_logger().info("5")
+        time.sleep(7)
+        
+        data = json.dumps({"T":1,"P6":10, "S6": 1000})
+        ser.write(data.encode())
+        self.get_logger().info("6")
+        time.sleep(2)
+        
+        data = json.dumps({'T':2,'P1':180.5104065,'P2':-13.75,'P3':186.5822754,'P4':180,'P5':235,"S1":10,"S5":1000})
+        ser.write(data.encode())
+        self.get_logger().info("7")
+        time.sleep(5)
+            
 
 
 def main(args=None):

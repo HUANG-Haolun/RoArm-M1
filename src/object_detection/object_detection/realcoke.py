@@ -7,6 +7,7 @@ from estimater import *
 from datareader import *
 import argparse
 import json
+import copy
 # model = YOLO("./runs/segment/train8/weights/best.pt")
 # results = model("/home/mihawk/yolo/dataset1/images/0001.png", save=False, imgsz=320, conf=0.5)
  
@@ -24,9 +25,9 @@ import cv2
 import socket
 
 
-# video_name = 'output_video1.mp4'
-# fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-# video = cv2.VideoWriter(video_name, fourcc, 30, (640, 480))
+video_name = 'output_video1.mp4'
+fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+video = cv2.VideoWriter(video_name, fourcc, 30, (640, 480))
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser()
@@ -34,7 +35,7 @@ if __name__=='__main__':
     parser.add_argument('--mesh_file3', type=str, default='/home/mihawk/Cutie/dataset/Carton_Model_V3.obj')
     parser.add_argument('--mesh_file2', type=str, default='/home/mihawk/Cutie/dataset/Bottle_V1_cola2.obj')
     parser.add_argument('--mesh_file1', type=str, default='/home/mihawk/Cutie/dataset/Can_Model_V2.obj')
-    parser.add_argument('--mesh_file4', type=str, default='/home/mihawk/Cutie/dataset/Can_Model_V2.obj')
+    # parser.add_argument('--mesh_file4', type=str, default='/home/mihawk/Cutie/dataset/Can_Model_V2.obj')
     
     parser.add_argument('--test_scene_dir', type=str, default='/home/mihawk/Cutie/dataset1')
     parser.add_argument('--est_refine_iter', type=int, default=5)
@@ -42,7 +43,7 @@ if __name__=='__main__':
     parser.add_argument('--debug', type=int, default=1)
     parser.add_argument('--debug_dir', type=str, default=f'{code_dir}/debug')
     args = parser.parse_args()
-    # video_writer = cv2.VideoWriter('output.avi', cv2.VideoWriter_fourcc(*'XVID'), 30, (640, 480))
+    video_writer = cv2.VideoWriter('output.avi', cv2.VideoWriter_fourcc(*'XVID'), 30, (640, 480))
     set_logging_format()
     set_seed(0)
 
@@ -141,13 +142,16 @@ if __name__=='__main__':
     intr = profile.get_stream(rs.stream.color).as_video_stream_profile().get_intrinsics()
     # print(intr)
     # model = YOLO("/home/mihawk/yolo/runs/segment/train8/weights/best.pt")
-    model = YOLO("/home/mihawk/GPHT/Aza_train13_19Feb(11m)/weights/best.pt")
+    # model = YOLO("/home/mihawk/GPHT/Aza_train13_19Feb(11m)/weights/best.pt")
     
-    # model = YOLO("/home/mihawk/Documents/Aza_train07_22J/train2/weights/epoch120.pt")
+    # model = YOLO("/home/mihawk/Aza_seg04_25Feb/weights/epoch90.pt")
+    model = YOLO("/home/mihawk/Aza_seg03_25Feb/weights/epoch120.pt")
     i = 0
     # Streaming loop
     output = np.zeros((480, 640), np.uint8)
     result_number = 0
+    result_name = -1
+    
     try:
         while True:
             # Get frameset of color and depth
@@ -172,13 +176,15 @@ if __name__=='__main__':
             # depth_image = cv2.imread("/home/mihawk/Cutie/dataset2/depth/0240.png",-1)/1e3
             depth_image[(depth_image<0.001) | (depth_image>=np.inf)] = 0
             depth_colormap = cv2.applyColorMap(cv2.convertScaleAbs(depth_image, alpha=0.03), cv2.COLORMAP_JET)
-            
+            # make the color image right conor(100x100) to black
+            #deep copy color_image
+            copy_image = color_image.copy()
+            # copy_image[:150,-100:] = 0
             results = model(color_image, save=False, imgsz=640, conf=0.86)
             # logging.info(f'i:{i}')
-            result_name = -1
             if len(results[0].boxes) != 0:
                 find_bool = True
-                result_name = int(results[0].boxes[0].cls.cpu().numpy()[0])
+                # result_name = int(results[0].boxes[0].cls.cpu().numpy()[0])
                 print(f"results name: {result_name}")
                 if result_number != results[0].boxes.shape[0]:
                     number_bool = False
@@ -191,52 +197,54 @@ if __name__=='__main__':
                 first_bool = True
                  
             output = reader.get_mask(0).astype(bool)
-            # if find_bool:
+            # # if find_bool:
             
-            if (find_bool and (first_bool or not number_bool)):
-                # for boundingbox
-                mask = results[0].boxes.xyxy[0]
-                output = np.zeros((480, 640), np.uint8)
-                cv2.rectangle(output, (int(mask[0]), int(mask[1])), (int(mask[2]), int(mask[3])), 255, -1)
+            # if (find_bool and (first_bool or not number_bool)):
+            #     # for boundingbox
+            #     result_name = int(results[0].boxes[0].cls.cpu().numpy()[0])
                 
-                # for mask
-                # mask = results[0].masks.xy[0]
-                # pts = np.array(mask, np.int32)
-                # pts = pts.reshape((-1, 1, 2))
-                # output = np.zeros((480, 640), np.uint8)
-                # cv2.fillPoly(output, [pts], 255)
-                est = None
+            #     # mask = results[0].boxes.xyxy[0]
+            #     # output = np.zeros((480, 640), np.uint8)
+            #     # cv2.rectangle(output, (int(mask[0]), int(mask[1])), (int(mask[2]), int(mask[3])), 255, -1)
                 
-                if result_name == 0:
-                    est = est1
-                    bbox = bbox1
-                    to_origin = to_origin1
-                elif result_name == 1:
-                    est = est2
-                    bbox = bbox2
-                    to_origin = to_origin2
-                elif result_name == 2:
-                    est = est3
-                    bbox = bbox3
-                    to_origin = to_origin3
+            #     # for mask
+            #     mask = results[0].masks.xy[0]
+            #     pts = np.array(mask, np.int32)
+            #     pts = pts.reshape((-1, 1, 2))
+            #     output = np.zeros((480, 640), np.uint8)
+            #     cv2.fillPoly(output, [pts], 255)
+            #     est = None
+                
+            #     if result_name == 0:
+            #         est = est1
+            #         bbox = bbox1
+            #         to_origin = to_origin1
+            #     elif result_name == 1:
+            #         est = est2
+            #         bbox = bbox2
+            #         to_origin = to_origin2
+            #     elif result_name == 2:
+            #         est = est3
+            #         bbox = bbox3
+            #         to_origin = to_origin3
                 
                 
-                pose = est.register(K=reader.K, rgb=color_image, depth=depth_image, ob_mask=output, iteration=args.est_refine_iter)
-                first_bool = False
+            #     pose = est.register(K=reader.K, rgb=copy_image, depth=depth_image, ob_mask=output, iteration=args.est_refine_iter)
+            #     first_bool = False
 
-            if find_bool and not first_bool:
-                pose = est.track_one(rgb=color_image, depth=depth_image, K=reader.K, iteration=args.track_refine_iter)
+            # if find_bool and not first_bool:
+            #     pose = est.track_one(rgb=copy_image, depth=depth_image, K=reader.K, iteration=args.track_refine_iter)
 
 
-                if debug>=1:
-                    center_pose = pose@np.linalg.inv(to_origin)
+            #     if debug>=1:
+            #         center_pose = pose@np.linalg.inv(to_origin)
 
-                    center_pose[3][3] = result_name
-                    json_data = json.dumps(center_pose.tolist())
-                    sock.sendall(json_data.encode('utf-8'))
-                    vis = draw_posed_3d_box(reader.K, img=color_image, ob_in_cam=center_pose, bbox=bbox)
-                    vis = draw_xyz_axis(color_image, ob_in_cam=center_pose, scale=0.1, K=reader.K, thickness=3, transparency=0)
-                    cv2.imshow('1', vis)
+            #         center_pose[3][3] = result_name
+            #         json_data = json.dumps(center_pose.tolist())
+            #         sock.sendall(json_data.encode('utf-8'))
+            #         vis = draw_posed_3d_box(reader.K, img=copy_image, ob_in_cam=center_pose, bbox=bbox)
+            #         vis = draw_xyz_axis(copy_image, ob_in_cam=center_pose, scale=0.1, K=reader.K, thickness=3, transparency=0)
+            #         cv2.imshow('1', vis)
             
             
             
@@ -245,7 +253,7 @@ if __name__=='__main__':
                 im = result.plot(conf = False)
                 # concat = np.hstack((im, output))
                 cv2.imshow('image', im)
-                # video.write(color_image)
+                video.write(color_image)
 
             i += 1
             key = cv2.waitKey(1)
@@ -257,7 +265,7 @@ if __name__=='__main__':
     finally:
         pipeline.stop()
         s.close()
-        # video.release()
+        video.release()
         cv2.destroyAllWindows()
         print("finish")
                     
