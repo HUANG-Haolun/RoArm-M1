@@ -197,54 +197,54 @@ if __name__=='__main__':
                 first_bool = True
                  
             output = reader.get_mask(0).astype(bool)
-            # # if find_bool:
+            # if find_bool:
             
-            # if (find_bool and (first_bool or not number_bool)):
-            #     # for boundingbox
-            #     result_name = int(results[0].boxes[0].cls.cpu().numpy()[0])
+            if (find_bool and (first_bool or not number_bool)):
+                # for boundingbox
+                result_name = int(results[0].boxes[0].cls.cpu().numpy()[0])
                 
-            #     # mask = results[0].boxes.xyxy[0]
-            #     # output = np.zeros((480, 640), np.uint8)
-            #     # cv2.rectangle(output, (int(mask[0]), int(mask[1])), (int(mask[2]), int(mask[3])), 255, -1)
+                # mask = results[0].boxes.xyxy[0]
+                # output = np.zeros((480, 640), np.uint8)
+                # cv2.rectangle(output, (int(mask[0]), int(mask[1])), (int(mask[2]), int(mask[3])), 255, -1)
                 
-            #     # for mask
-            #     mask = results[0].masks.xy[0]
-            #     pts = np.array(mask, np.int32)
-            #     pts = pts.reshape((-1, 1, 2))
-            #     output = np.zeros((480, 640), np.uint8)
-            #     cv2.fillPoly(output, [pts], 255)
-            #     est = None
+                # for mask
+                mask = results[0].masks.xy[0]
+                pts = np.array(mask, np.int32)
+                pts = pts.reshape((-1, 1, 2))
+                output = np.zeros((480, 640), np.uint8)
+                cv2.fillPoly(output, [pts], 255)
+                est = None
                 
-            #     if result_name == 0:
-            #         est = est1
-            #         bbox = bbox1
-            #         to_origin = to_origin1
-            #     elif result_name == 1:
-            #         est = est2
-            #         bbox = bbox2
-            #         to_origin = to_origin2
-            #     elif result_name == 2:
-            #         est = est3
-            #         bbox = bbox3
-            #         to_origin = to_origin3
+                if result_name == 0:
+                    est = est1
+                    bbox = bbox1
+                    to_origin = to_origin1
+                elif result_name == 1:
+                    est = est2
+                    bbox = bbox2
+                    to_origin = to_origin2
+                elif result_name == 2:
+                    est = est3
+                    bbox = bbox3
+                    to_origin = to_origin3
                 
                 
-            #     pose = est.register(K=reader.K, rgb=copy_image, depth=depth_image, ob_mask=output, iteration=args.est_refine_iter)
-            #     first_bool = False
+                pose = est.register(K=reader.K, rgb=copy_image, depth=depth_image, ob_mask=output, iteration=args.est_refine_iter)
+                first_bool = False
 
-            # if find_bool and not first_bool:
-            #     pose = est.track_one(rgb=copy_image, depth=depth_image, K=reader.K, iteration=args.track_refine_iter)
+            if find_bool and not first_bool:
+                pose = est.track_one(rgb=copy_image, depth=depth_image, K=reader.K, iteration=args.track_refine_iter)
 
 
-            #     if debug>=1:
-            #         center_pose = pose@np.linalg.inv(to_origin)
+                if debug>=1:
+                    center_pose = pose@np.linalg.inv(to_origin)
 
-            #         center_pose[3][3] = result_name
-            #         json_data = json.dumps(center_pose.tolist())
-            #         sock.sendall(json_data.encode('utf-8'))
-            #         vis = draw_posed_3d_box(reader.K, img=copy_image, ob_in_cam=center_pose, bbox=bbox)
-            #         vis = draw_xyz_axis(copy_image, ob_in_cam=center_pose, scale=0.1, K=reader.K, thickness=3, transparency=0)
-            #         cv2.imshow('1', vis)
+                    center_pose[3][3] = result_name
+                    json_data = json.dumps(center_pose.tolist())
+                    sock.sendall(json_data.encode('utf-8'))
+                    vis = draw_posed_3d_box(reader.K, img=copy_image, ob_in_cam=center_pose, bbox=bbox)
+                    vis = draw_xyz_axis(copy_image, ob_in_cam=center_pose, scale=0.1, K=reader.K, thickness=3, transparency=0)
+                    cv2.imshow('1', vis)
             
             
             

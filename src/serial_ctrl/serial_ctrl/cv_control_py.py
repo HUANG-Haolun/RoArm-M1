@@ -140,16 +140,16 @@ class MinimalSubscriber(Node):
         #     angle = 180 + angle
         # self.get_logger().info(f"Angle: {angle}")
         
-        target_x = 180.5104065 +( -0.125 + target_pose.pose.position.x) * 1000
+        target_x = int(180.5104065 +( -0.14 + target_pose.pose.position.x) * 1000)
 
   
-        target_y = -25.75 - (target_pose.pose.position.y) * 1000 * 0.55
+        target_y = int(-14.75 - (target_pose.pose.position.y) * 1000 * 0.55)
 
            
         phase_angle = math.atan2(target_y+13, target_x)/math.pi*180
         print(f"Phase angle: {phase_angle}")
         print(f"Angle: {angle}")
-        target_angle = 235 + angle + phase_angle
+        target_angle = int(235 + angle + phase_angle)
         if target_angle < 105:
             target_angle = 145
         if target_angle > 375:
@@ -175,10 +175,10 @@ class MinimalSubscriber(Node):
     
         time.sleep(3)
 
-        if object_type == 2:
-            data = json.dumps({'T':2,'P1':target_x,'P2':target_y,'P3':76.5822754,'P4':180,'P5':target_angle,"S1":10,"S5":1000})
-        else:
-            data = json.dumps({'T':2,'P1':target_x,'P2':target_y,'P3':106.5822754,'P4':180,'P5':target_angle,"S1":10,"S5":1000})
+        # if object_type == 2:
+        #     data = json.dumps({'T':2,'P1':target_x,'P2':target_y,'P3':76.5822754,'P4':180,'P5':target_angle,"S1":10,"S5":1000})
+        # else:
+        data = json.dumps({'T':2,'P1':target_x,'P2':target_y,'P3':106.5822754,'P4':180,'P5':target_angle,"S1":10,"S5":1000})
             
             
         ser.write(data.encode())
@@ -186,13 +186,13 @@ class MinimalSubscriber(Node):
         time.sleep(3)
         
         # data = json.dumps({"T":1,"P6":75, "S6": 1000})
-        if object_type == 0:
-            data = json.dumps({"T":1,"P6":70, "S6": 1000})
-        elif object_type == 1:
-            data = json.dumps({"T":1,"P6":80, "S6": 1000})
-        elif object_type == 2:
-            print("carton")
-            data = json.dumps({"T":1,"P6":65, "S6": 1000})
+        # if object_type == 0:
+        #     data = json.dumps({"T":1,"P6":70, "S6": 1000})
+        # elif object_type == 1:
+        data = json.dumps({"T":1,"P6":80, "S6": 1000})
+        # elif object_type == 2:
+        #     print("carton")
+        #     data = json.dumps({"T":1,"P6":65, "S6": 1000})
         
         ser.write(data.encode())
         self.get_logger().info("3")
