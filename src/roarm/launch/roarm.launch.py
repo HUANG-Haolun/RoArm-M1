@@ -18,10 +18,10 @@ def generate_launch_description():
  
   # Set the path to the RViz configuration settings
   default_rviz_config_path = os.path.join(pkg_share, 'rviz/rviz_basic_settings.rviz')
- 
+  # default_rviz_config_path = '/home/mihawk/Documents/123.rviz'
   # Set the path to the URDF file
   default_urdf_model_path = os.path.join(pkg_share, 'urdf/roarm.urdf')
- 
+  # default_urdf_model_path = os.path.join(pkg_share, 'urdf/g1_description/g1_29dof_rev_1_0.urdf')
   ########### YOU DO NOT NEED TO CHANGE ANYTHING BELOW THIS LINE ##############  
   # Launch configuration variables specific to simulation
   gui = LaunchConfiguration('gui')

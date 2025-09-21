@@ -23,6 +23,7 @@ import numpy as np
 # Import OpenCV for easy image rendering
 import cv2
 import socket
+import time
 
 
 video_name = 'output_video1.mp4'
@@ -68,14 +69,17 @@ if __name__=='__main__':
     mesh3.vertices *= 2
     # mesh.vertices /=1000
 
-    to_origin3, extents3 = trimesh.bounds.oriented_bounds(mesh1)
+    to_origin3, extents3 = trimesh.bounds.oriented_bounds(mesh3)
     bbox3 = np.stack([-extents3/2, extents3/2], axis=0).reshape(2,3)
     
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     
     host = '127.0.0.1'  
     port = 8888     
-    sock.connect((host, port))
+    try:
+        sock.connect((host, port))
+    except ConnectionRefusedError:
+        print("Connection failed. Make sure the server is running.")
   
     find_bool = False
     first_bool = True
@@ -157,6 +161,7 @@ if __name__=='__main__':
             # Get frameset of color and depth
             frames = pipeline.wait_for_frames()
             # frames.get_depth_frame() is a 640x360 depth image
+            start_time = time.time()
 
             # Align the depth frame to color frame
             aligned_frames = align.process(frames)
@@ -241,12 +246,15 @@ if __name__=='__main__':
 
                     center_pose[3][3] = result_name
                     json_data = json.dumps(center_pose.tolist())
-                    sock.sendall(json_data.encode('utf-8'))
+                    try:
+                        sock.sendall(json_data.encode('utf-8'))
+                    except BrokenPipeError:
+                        print("Connection lost. Make sure the server is running.")
                     vis = draw_posed_3d_box(reader.K, img=copy_image, ob_in_cam=center_pose, bbox=bbox)
                     vis = draw_xyz_axis(copy_image, ob_in_cam=center_pose, scale=0.1, K=reader.K, thickness=3, transparency=0)
                     cv2.imshow('1', vis)
             
-            
+                print(f"YOLO process time: {time.time() - start_time:.3f} seconds")           
             
             
             for result in results: 

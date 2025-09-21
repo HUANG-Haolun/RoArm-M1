@@ -6,6 +6,8 @@ from std_msgs.msg import String
 from geometry_msgs.msg import PoseStamped
 from scipy.spatial.transform import Rotation 
 from scipy.spatial.transform import Rotation as R
+from sensor_msgs.msg import JointState
+from time import time
 import numpy as np
 import math
 
@@ -37,7 +39,7 @@ class MinimalPublisher(Node):
         try:
 
         
-        # print("Received array:", data)
+            self.get_logger().info("Received array:")
             data = self.conn.recv(1024)
             
             if not data:
@@ -61,6 +63,11 @@ class MinimalPublisher(Node):
 
         except Exception as e:
             print("Error aaa:::", e)
+            try:
+                self.s.settimeout(1)
+                self.conn, addr = self.s.accept()
+            except socket.error as e:
+                print(f"Socket accept error: {e}")
 
         
 

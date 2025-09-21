@@ -1,0 +1,1 @@
+ros2 topic pub /pos_cmd piper_msgs/PosCmd "{x: 0.296465 , y: 0.262938, z: 0.2167, roll: 3.10268926, pitch: 0.02640683, yaw: -2.47796611, gripper: 0.05, mode1: 0, mode2: 0}" -10.296465
